@@ -3,12 +3,17 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/labstack/echo/v4"
 
 	"github.com/Rafaela314/Go-mongo-REST-Exemple/config"
+	"github.com/Rafaela314/Go-mongo-REST-Exemple/logs"
+	"github.com/Rafaela314/Go-mongo-REST-Exemple/middleware"
 	"github.com/Rafaela314/Go-mongo-REST-Exemple/models"
+	m "github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 func welcome() {
@@ -37,6 +42,27 @@ func main() {
 
 	//server configuration
 	e := echo.New()
+	e.HideBanner = true
+	e.Logger = logs.LogrusAdapter()
+	e.Logger.SetLevel(cfg.LogLevel)
+	e.Logger.SetOutput(cfg.LogOutput)
+
+	//Middlerware
+	e.Use(middleware.Logger())
+
+	// Swagger
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
+
+	// CORS config
+	allowOrigins := []string{"*"}
+	if s, ok := os.LookupEnv("SERVER_CORS"); ok {
+		allowOrigins = []string{s}
+	}
+
+	e.Use(m.CORSWithConfig(m.CORSConfig{
+		AllowOrigins: allowOrigins,
+		AllowMethods: []string{echo.OPTIONS, echo.GET, echo.HEAD, echo.PUT, echo.PATCH, echo.POST, echo.DELETE},
+	}))
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello World!")

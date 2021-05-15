@@ -12,5 +12,7 @@ require (
 	github.com/labstack/echo/v4 v4.3.0
 	github.com/labstack/gommon v0.3.0
 	github.com/mattn/go-shellwords v1.0.11 // indirect
+	github.com/sirupsen/logrus v1.8.1
+	github.com/swaggo/echo-swagger v1.1.0
 	gopkg.in/urfave/cli.v1 v1.20.0 // indirect
 )
