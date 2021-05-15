@@ -7,7 +7,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	"github.com/Rafaela314/Go-Web-development/models"
+	"github.com/Rafaela314/Go-mongo-REST-Exemple/config"
+	"github.com/Rafaela314/Go-mongo-REST-Exemple/models"
 )
 
 func welcome() {
@@ -21,9 +22,18 @@ func welcome() {
 	fmt.Println(" /____/                    /____/                                                                  ")
 }
 
+// @title Star Wars API
+// @Version 1.0
+// @BasePath /
+
 func main() {
 
 	welcome()
+
+	//load configuration
+	cfg := config.LoadConfig()
+
+	fmt.Printf("/n CFG %v /n", cfg)
 
 	//server configuration
 	e := echo.New()
