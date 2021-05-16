@@ -29,8 +29,6 @@ func (c *controller) Get(key, url string) ([]byte, error) {
 
 	getPlanetsURL := fmt.Sprintf("%s/%s/%s", c.SwapiURL, url, key)
 
-	fmt.Printf("/n URL SWA %v /n", getPlanetsURL)
-
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}

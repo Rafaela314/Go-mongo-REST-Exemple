@@ -28,8 +28,6 @@ func New() Planet {
 func (s *service) Create(planet models.Planet) (*models.Planet, error) {
 	var response models.Planet
 
-	fmt.Printf("\n PLANET %v \n", planet)
-
 	info, err := s.GetPlanetInfos(planet.Name)
 
 	if err != nil {
@@ -37,9 +35,6 @@ func (s *service) Create(planet models.Planet) (*models.Planet, error) {
 	}
 
 	response.Appearances = len(info.Results[0].Films)
-
-	fmt.Printf("\n FILMS %v \n", info.Results[0].Films)
-	fmt.Printf("\n LENFILMS %v \n", len(info.Results[0].Films))
 
 	return &response, nil
 }
@@ -57,8 +52,6 @@ func (s *service) GetPlanetInfos(name string) (*models.InfoResponse, error) {
 	if err != nil {
 		return nil, xerrors.Errorf("On body unmarshal: %w", err)
 	}
-
-	fmt.Printf("/n RESPONSEW SWAPI %v /n", response)
 
 	return &response, nil
 
