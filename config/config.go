@@ -18,7 +18,7 @@ type Config struct {
 	LogOutput  io.Writer
 	Production bool
 	File       map[string]string
-	MongoUrl   string
+	MongoURL   string
 	SwapiURL   string
 }
 
@@ -37,7 +37,7 @@ func LoadConfig() Config {
 	var cfg Config
 
 	if s, ok := os.LookupEnv("MONGO_URL"); ok {
-		cfg.MongoUrl = s
+		cfg.MongoURL = s
 	}
 
 	if s, ok := os.LookupEnv("API_PORT"); ok {

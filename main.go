@@ -40,14 +40,6 @@ func main() {
 
 	//load configuration
 	cfg := config.LoadConfig()
-	/*
-		// database connection
-		db, err := openDBConnection(cfg)
-		if err != nil {
-			os.Exit(1)
-		}
-		defer db.Close()
-	*/
 
 	//server configuration
 	e := echo.New()
@@ -74,7 +66,7 @@ func main() {
 	}))
 
 	//create server
-	s := server.NewServer(e, settings.NewSettings(cfg.SwapiURL))
+	s := server.NewServer(e, settings.NewSettings(cfg.MongoURL, cfg.SwapiURL))
 
 	//API routes
 	r := router.New(s)
@@ -90,31 +82,3 @@ func main() {
 	cancel()
 
 }
-
-/*
-func openDBConnection(cfg config) (*sqlx.DB, error) {
-	var db *sqlx.DB
-	var err error
-
-	for i := 0; i < 5; i++ {
-		if i > 0 {
-			time.Sleep(time.Duration(i+1) * time.Second)
-		}
-
-		fmt.Printf("Connecting to database (tries=%d)... ", i+1)
-		db, err = sqlx.Open(cfg.DBDriver, cfg.DBURL)
-		if err != nil {
-			fmt.Printf("ERROR!\n%v\n\n", err)
-			continue
-		}
-
-		err = db.Ping()
-		if err != nil {
-			fmt.Printf("ERROR!\ndatabase error: %v\n", err)
-		} else {
-			break
-		}
-	}
-
-	return db, err
-}*/

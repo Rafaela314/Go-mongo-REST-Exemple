@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/Rafaela314/Go-mongo-REST-Exemple/dao"
 	"github.com/Rafaela314/Go-mongo-REST-Exemple/models"
 	swapi "github.com/Rafaela314/Go-mongo-REST-Exemple/remote"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/xerrors"
 )
 
@@ -26,17 +28,21 @@ func New() Planet {
 }
 
 func (s *service) Create(planet models.Planet) (*models.Planet, error) {
-	var response models.Planet
 
 	info, err := s.GetPlanetInfos(planet.Name)
-
 	if err != nil {
 		return nil, xerrors.Errorf("could not find planet in swapi: %w", err)
 	}
 
-	response.Appearances = len(info.Results[0].Films)
+	planet.Appearances = len(info.Results[0].Films)
 
-	return &response, nil
+	planet.ID = primitive.NewObjectID()
+
+	err = dao.NewPlanet().InsertPlanet(planet)
+	if err != nil {
+		return nil, xerrors.Errorf("Saving planet on db: %v", err)
+	}
+	return &planet, nil
 }
 
 func (s *service) GetPlanetInfos(name string) (*models.InfoResponse, error) {

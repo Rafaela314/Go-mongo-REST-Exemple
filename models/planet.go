@@ -1,14 +1,16 @@
 package models
 
-import "gopkg.in/mgo.v2/bson"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 // Planet represents a planet that appears in star wars movies.
 type Planet struct {
-	ID          bson.ObjectId `db:"_id" json:"id" swaggertype:"string"`
-	Name        string        `db:"name" json:"name" swaggertype:"string"`
-	Weather     string        `db:"weather" json:"weather" swaggertype:"string"`
-	Land        float64       `db:"land" json:"land" swaggertype:"number"`
-	Appearances int           `db:"appearances" json:"appearances" swaggertype:"number"`
+	ID          primitive.ObjectID `bson:"_id" json:"id" swaggertype:"string"`
+	Name        string             `bson:"name" json:"name" swaggertype:"string"`
+	Weather     string             `bson:"weather" json:"weather,omitempty" swaggertype:"string"`
+	Land        float64            `bson:"land" json:"land,omitempty" swaggertype:"number"`
+	Appearances int                `bson:"appearances" json:"appearances" swaggertype:"number"`
 }
 
 // PlanetInfosResponse represents additional information send by swapi api.

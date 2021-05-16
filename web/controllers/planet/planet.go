@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	services "github.com/Rafaela314/Go-mongo-REST-Exemple/services/planet"
+	"github.com/Rafaela314/Go-mongo-REST-Exemple/settings"
 	"github.com/Rafaela314/Go-mongo-REST-Exemple/web/controllers"
 
 	"github.com/labstack/echo/v4"
@@ -11,11 +12,12 @@ import (
 )
 
 type controller struct {
+	MongoURL string
 }
 
 // New controller
 func New() controllers.Controller {
-	return &controller{}
+	return &controller{MongoURL: settings.Setting.MongoURL}
 }
 
 // @Summary Create
