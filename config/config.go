@@ -20,7 +20,6 @@ type Config struct {
 	File       map[string]string
 	MongoUrl   string
 	SwapiURL   string
-	//CORS       string
 }
 
 // Config global

@@ -1,17 +1,20 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/labstack/echo/v4"
 
 	"github.com/Rafaela314/Go-mongo-REST-Exemple/config"
 	"github.com/Rafaela314/Go-mongo-REST-Exemple/logs"
-	"github.com/Rafaela314/Go-mongo-REST-Exemple/middleware"
-	"github.com/Rafaela314/Go-mongo-REST-Exemple/models"
+	"github.com/Rafaela314/Go-mongo-REST-Exemple/settings"
+	"github.com/Rafaela314/Go-mongo-REST-Exemple/web/middleware"
+	"github.com/Rafaela314/Go-mongo-REST-Exemple/web/router"
+	"github.com/Rafaela314/Go-mongo-REST-Exemple/web/server"
 	m "github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
@@ -38,8 +41,6 @@ func main() {
 	//load configuration
 	cfg := config.LoadConfig()
 
-	fmt.Printf("/n CFG %v /n", cfg)
-
 	//server configuration
 	e := echo.New()
 	e.HideBanner = true
@@ -64,34 +65,20 @@ func main() {
 		AllowMethods: []string{echo.OPTIONS, echo.GET, echo.HEAD, echo.PUT, echo.PATCH, echo.POST, echo.DELETE},
 	}))
 
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello World!")
-	})
+	//create server
+	s := server.NewServer(e, settings.NewSettings(cfg.SwapiURL))
 
-	//system test
-	e.GET("/system/alive", isAlive)
-	e.GET("/system/echo", getEcho)
-	e.GET("/system/now", now)
+	//API routes
+	r := router.New(s)
+	r.Setup()
 
-	e.Logger.Fatal(e.Start(":1223"))
-}
+	//start server
+	e.Logger.Fatal(s.Start(":" + strconv.FormatUint(cfg.Port, 10)))
 
-func isAlive(c echo.Context) error {
-	return c.String(http.StatusOK, "Yes.")
-}
-
-func getEcho(c echo.Context) error {
-	p := c.QueryParam("text")
-	return c.String(http.StatusOK, p)
-}
-
-func now(c echo.Context) error {
-	t := time.Now()
-	ts := models.Timestamp{
-		Unix:  t.UnixNano(),
-		UTC:   t.UTC(),
-		Local: t.Local(),
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	if err := s.E.Shutdown(ctx); err != nil {
+		e.Logger.Fatal("Server Shutdown Failed", err.Error())
 	}
-	return c.JSON(http.StatusOK, ts)
+	cancel()
 
 }
