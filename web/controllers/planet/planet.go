@@ -27,6 +27,103 @@ func New() controllers.Controller {
 
 func (c *controller) Create(ec echo.Context) error {
 
+	planet := new(planetPayload)
+
+	err := ec.Bind(planet)
+	if err != nil {
+		return xerrors.Errorf("On binding request body : %v", err)
+	}
+
+	newplanet, err := services.New().Create(planet.Planet)
+	if err != nil {
+		return ec.JSON(http.StatusBadRequest, err)
+	}
+
+	return ec.JSON(http.StatusCreated, newplanet)
+}
+
+// @Summary List
+// @Description Returns all planet
+// @Tags planet
+// @Produce json
+// @Success 200 {object} Planet "Returns a json object with the requested planet list."
+// @Router /planets [get]
+func (c *controller) List(ec echo.Context) error {
+
+	var planet planetPayload
+
+	err := ec.Bind(planet)
+	if err != nil {
+		return xerrors.Errorf("On binding request body : %v", err)
+	}
+
+	newplanet, err := services.New().Create(planet.Planet)
+	if err != nil {
+		return ec.JSON(http.StatusBadRequest, err)
+	}
+
+	return ec.JSON(http.StatusCreated, newplanet)
+}
+
+// @Summary GetByName
+// @Description Returns a planet
+// @Tags planet
+// @Produce json
+// @Param id path string true "The ID of the planet"
+// @Success 200 {object} Planet "Returns a json object with the requested planet."
+// @Router /planets/{name} [get]
+
+func (c *controller) GetByName(ec echo.Context) error {
+
+	var planet planetPayload
+
+	err := ec.Bind(planet)
+	if err != nil {
+		return xerrors.Errorf("On binding request body : %v", err)
+	}
+
+	newplanet, err := services.New().Create(planet.Planet)
+	if err != nil {
+		return ec.JSON(http.StatusBadRequest, err)
+	}
+
+	return ec.JSON(http.StatusCreated, newplanet)
+}
+
+// @Summary Get
+// @Description Returns a planet
+// @Tags planet
+// @Produce json
+// @Param id path string true "The ID of the planet"
+// @Success 200 {object} Planet "Returns a json object with the requested planet."
+// @Router /api/company/{id} [get]
+func (c *controller) Get(ec echo.Context) error {
+
+	var planet planetPayload
+
+	err := ec.Bind(planet)
+	if err != nil {
+		return xerrors.Errorf("On binding request body : %v", err)
+	}
+
+	newplanet, err := services.New().Create(planet.Planet)
+	if err != nil {
+		return ec.JSON(http.StatusBadRequest, err)
+	}
+
+	return ec.JSON(http.StatusCreated, newplanet)
+}
+
+// @Summary Delete
+// @Description Deletes a company
+// @Tags company
+// @Produce json
+// @Param id path string true "The ID of the company to be deleted"
+// @Param Authorization header string false "Should be 'Bearer (token)'"
+// @Success 204 "Returns a 'no content' response."
+// @Router /api/company/{id} [delete]
+func (c *controller) Delete(ec echo.Context) error {
+
 	var planet planetPayload
 
 	err := ec.Bind(planet)

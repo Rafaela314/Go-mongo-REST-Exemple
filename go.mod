@@ -15,6 +15,8 @@ require (
 	github.com/mattn/go-shellwords v1.0.11 // indirect
 	github.com/sirupsen/logrus v1.8.1
 	github.com/swaggo/echo-swagger v1.1.0
+	go.mongodb.org/mongo-driver v1.5.2 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
+	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
 	gopkg.in/urfave/cli.v1 v1.20.0 // indirect
 )

@@ -1,22 +1,21 @@
 version: "3"
 services:
-  msstarwars.go:
-    container_name: msstarwars.v1.go
+  ms_starwars.go:
+    container_name: msstarwars.go
     image: golang:1.14.4-buster
     command: bash -c "go get github.com/codegangsta/gin && cp /go/bin/gin /usr/local/go && gin --port 3002 --appPort 1234 --all -i run main.go"
     volumes:
       - .:/ms_starwars
     working_dir: /ms_starwars
     ports:
-      - "9992:9992"
+      - "1234:1234"
     environment: 
-    - MONGO_URL=mongodb://0.0.0.0:27017
+    - MONGO_URL=msstarwars.mongo
     depends_on:
       - msstarwars.mongo
-    network_mode: "host"
 
   msstarwars.mongo:
-    container_name: msstarwars.v1.mongo
+    container_name: msstarwars.mongo
     image: mongo:4.0
     ports:
       - "0.0.0.0:27017:27017"
