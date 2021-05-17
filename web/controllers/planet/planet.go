@@ -67,32 +67,28 @@ func (c *controller) List(ec echo.Context) error {
 	return ec.JSON(http.StatusCreated, newplanet)
 }
 
-// @Summary GetByName
+// @Summary GetPlanetByName
 // @Description Returns a planet
 // @Tags planet
 // @Produce json
-// @Param id path string true "The ID of the planet"
+// @Param name path string true "The name of the planet"
 // @Success 200 {object} Planet "Returns a json object with the requested planet."
 // @Router /planets/{name} [get]
 
 func (c *controller) GetByName(ec echo.Context) error {
 
-	var planet planetPayload
+	//get params
+	name := ec.Param("name")
 
-	err := ec.Bind(planet)
-	if err != nil {
-		return xerrors.Errorf("On binding request body : %v", err)
-	}
-
-	newplanet, err := services.New().Create(planet.Planet)
+	planet, err := services.New().GetPlanetByName(name)
 	if err != nil {
 		return ec.JSON(http.StatusBadRequest, err)
 	}
 
-	return ec.JSON(http.StatusCreated, newplanet)
+	return ec.JSON(http.StatusCreated, planet)
 }
 
-// @Summary Get
+// @Summary GetPlanet
 // @Description Returns a planet
 // @Tags planet
 // @Produce json
@@ -101,19 +97,14 @@ func (c *controller) GetByName(ec echo.Context) error {
 // @Router /api/company/{id} [get]
 func (c *controller) Get(ec echo.Context) error {
 
-	var planet planetPayload
+	id := ec.Param("id")
 
-	err := ec.Bind(planet)
-	if err != nil {
-		return xerrors.Errorf("On binding request body : %v", err)
-	}
-
-	newplanet, err := services.New().Create(planet.Planet)
+	planet, err := services.New().GetPlanet(id)
 	if err != nil {
 		return ec.JSON(http.StatusBadRequest, err)
 	}
 
-	return ec.JSON(http.StatusCreated, newplanet)
+	return ec.JSON(http.StatusCreated, planet)
 }
 
 // @Summary Delete

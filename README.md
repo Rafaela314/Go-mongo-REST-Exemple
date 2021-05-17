@@ -5,9 +5,7 @@
 To easily test the API, execute the `docker-compose.yml` file:
 
 ```bash
-
-## notice the '--build', to rebuild the application container
-sudo docker-compose -f  docker-compose.yaml up
+sudo docker-compose -f  docker-compose.yaml up 
 ```
 This will compile the current source into a usable image, download the dependencies and build the necessary containers. Assuming everything goes smoothly, this command will create and run 2 containers:
 

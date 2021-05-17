@@ -2,6 +2,9 @@ package dao
 
 import (
 	"github.com/Rafaela314/Go-mongo-REST-Exemple/models"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/xerrors"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // Planets collection
@@ -12,8 +15,8 @@ const (
 // Planet dao interface
 type Planet interface {
 	InsertPlanet(planet models.Planet) error
-	//GetPlanet(id int) (*models.Planet, error)
-	//GetPlanetByName(name string) (*models.Planet, error)
+	GetPlanet(id string) (*models.Planet, error)
+	GetPlanetByName(name string) (*models.Planet, error)
 }
 
 type planet struct {
@@ -31,4 +34,33 @@ func NewPlanet() Planet {
 func (d *planet) InsertPlanet(planet models.Planet) error {
 
 	return d.Save(planet, Planets)
+}
+
+func (d *planet) GetPlanet(id string) (*models.Planet, error) {
+
+	var result models.Planet
+
+	oid, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, xerrors.Errorf("Converting string to primitive bson id: %v", err)
+	}
+
+	_ = d.GetCollection().FindOne(d.ctx, bson.M{"_id": oid}).Decode(&result)
+	if err != nil {
+		return nil, xerrors.Errorf("Unable to use mongo: %v", err)
+	}
+
+	return &result, err
+}
+
+func (d *planet) GetPlanetByName(name string) (*models.Planet, error) {
+
+	var result models.Planet
+
+	_ = d.GetCollection().FindOne(d.ctx, bson.M{"name": name}).Decode(&result)
+	//if err != nil {
+	//	return nil, xerrors.Errorf("Unable to use mongo: %v", err)
+	//}
+
+	return &result, nil
 }

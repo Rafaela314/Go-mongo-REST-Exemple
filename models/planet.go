@@ -1,6 +1,8 @@
 package models
 
 import (
+	"reflect"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -34,4 +36,9 @@ type PlanetResponse struct {
 type InfoResponse struct {
 	Count   int              `json:"count"`
 	Results []PlanetResponse `json:"results"`
+}
+
+// IsEmpty checks if response is unpopulated
+func (m *PlanetResponse) IsEmpty() bool {
+	return reflect.DeepEqual(*m, PlanetResponse{})
 }
