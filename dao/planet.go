@@ -17,6 +17,7 @@ type Planet interface {
 	InsertPlanet(planet models.Planet) error
 	GetPlanet(id string) (*models.Planet, error)
 	GetPlanetByName(name string) ([]models.Planet, error)
+	DeletePlanet(planetID string) error
 }
 
 type planet struct {
@@ -68,4 +69,19 @@ func (d *planet) GetPlanetByName(name string) ([]models.Planet, error) {
 	}
 
 	return result, nil
+}
+
+func (d *planet) DeletePlanet(planetID string) error {
+
+	oid, err := primitive.ObjectIDFromHex(planetID)
+	if err != nil {
+		return xerrors.Errorf("Converting string to primitive bson id: %v", err)
+	}
+
+	_, err = d.GetCollection().DeleteMany(d.ctx, bson.M{"_id": oid})
+	if err != nil {
+		return xerrors.Errorf("Deleting planet: %v", err)
+	}
+
+	return nil
 }

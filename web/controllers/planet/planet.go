@@ -39,30 +39,7 @@ func (c *controller) Create(ec echo.Context) error {
 
 	newplanet, err := services.New().Create(planet.Planet)
 	if err != nil {
-		return ec.JSON(http.StatusBadRequest, err)
-	}
-
-	return ec.JSON(http.StatusCreated, newplanet)
-}
-
-// @Summary List
-// @Description Returns all planet
-// @Tags planet
-// @Produce json
-// @Success 200 {object} Planet "Returns a json object with the requested planet list."
-// @Router /planets [get]
-func (c *controller) List(ec echo.Context) error {
-
-	var planet planetPayload
-
-	err := ec.Bind(planet)
-	if err != nil {
-		return xerrors.Errorf("On binding request body : %v", err)
-	}
-
-	newplanet, err := services.New().Create(planet.Planet)
-	if err != nil {
-		return ec.JSON(http.StatusBadRequest, errors.TypedError{Code: errors.ErrorFindingPlanetById, Message: "Error creating a new planet. Check https://swapi.dev/api/planets/ to get the list of allwed planets ", Stack: err})
+		return ec.JSON(http.StatusBadRequest, errors.TypedError{Code: errors.ErrorCreatingPlanet, Message: "Error creating a new planet. Check https://swapi.dev/api/planets/ to get the list of allwed planets ", Stack: planet})
 	}
 
 	return ec.JSON(http.StatusCreated, newplanet)
@@ -74,7 +51,7 @@ func (c *controller) List(ec echo.Context) error {
 // @Produce json
 // @Param name path string true "The name of the planet"
 // @Success 200 {object} Planet "Returns a json object with the requested planet."
-// @Router /planets/{name} [get]
+// @Router /planets/name/{name} [get]
 
 func (c *controller) GetByName(ec echo.Context) error {
 
@@ -86,7 +63,7 @@ func (c *controller) GetByName(ec echo.Context) error {
 		return ec.JSON(http.StatusBadRequest, errors.TypedError{Code: errors.ErrorFindingPlanetByName, Message: "No planet was found with this name, please verify planet name.", Stack: name})
 	}
 
-	return ec.JSON(http.StatusCreated, planet)
+	return ec.JSON(http.StatusOK, planet)
 }
 
 // @Summary GetPlanet
@@ -95,40 +72,35 @@ func (c *controller) GetByName(ec echo.Context) error {
 // @Produce json
 // @Param id path string true "The ID of the planet"
 // @Success 200 {object} Planet "Returns a json object with the requested planet."
-// @Router /api/company/{id} [get]
+// @Router /api/planet/{id} [get]
 func (c *controller) Get(ec echo.Context) error {
 
-	id := ec.Param("id")
+	planetID := ec.Param("id")
 
-	planet, err := services.New().GetPlanet(id)
+	planet, err := services.New().GetPlanet(planetID)
 	if err != nil {
-		return ec.JSON(http.StatusBadRequest, errors.TypedError{Code: errors.ErrorFindingPlanetById, Message: "No planet was found with this id, please verify planet id.", Stack: id})
+		return ec.JSON(http.StatusBadRequest, errors.TypedError{Code: errors.ErrorFindingPlanetById, Message: "No planet was found with this id, please verify planet id.", Stack: planetID})
 	}
 
-	return ec.JSON(http.StatusCreated, planet)
+	return ec.JSON(http.StatusOK, planet)
 }
 
 // @Summary Delete
-// @Description Deletes a company
-// @Tags company
+// @Description Deletes a planet
+// @Tags planet
 // @Produce json
-// @Param id path string true "The ID of the company to be deleted"
+// @Param id path string true "The ID of the planet to be deleted"
 // @Param Authorization header string false "Should be 'Bearer (token)'"
 // @Success 204 "Returns a 'no content' response."
-// @Router /api/company/{id} [delete]
+// @Router /api/planet/{id} [delete]
 func (c *controller) Delete(ec echo.Context) error {
 
-	var planet planetPayload
+	planetID := ec.Param("id")
 
-	err := ec.Bind(planet)
+	err := services.New().DeletePlanet(planetID)
 	if err != nil {
-		return xerrors.Errorf("On binding request body : %v", err)
+		return ec.JSON(http.StatusBadRequest, errors.TypedError{Code: errors.ErrorDeletingPlanet, Message: "Could not find planet to delete. please verify the id.", Stack: planetID})
 	}
 
-	newplanet, err := services.New().Create(planet.Planet)
-	if err != nil {
-		return ec.JSON(http.StatusBadRequest, err)
-	}
-
-	return ec.JSON(http.StatusCreated, newplanet)
+	return ec.JSON(http.StatusOK, planetID)
 }

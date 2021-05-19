@@ -4,6 +4,7 @@ const (
 	ErrorFindingPlanetByName = 1
 	ErrorFindingPlanetById   = 2
 	ErrorCreatingPlanet      = 3
+	ErrorDeletingPlanet      = 4
 )
 
 //AppError -

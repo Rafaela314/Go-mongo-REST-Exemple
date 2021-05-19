@@ -42,3 +42,10 @@ type InfoResponse struct {
 func (m *PlanetResponse) IsEmpty() bool {
 	return reflect.DeepEqual(*m, PlanetResponse{})
 }
+
+func (m *Planet) IsValid() bool {
+	if m.Name == "" || m.Land == 0 {
+		return false
+	}
+	return true
+}

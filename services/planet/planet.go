@@ -18,6 +18,7 @@ type Planet interface {
 	Create(planet models.Planet) (*models.Planet, error)
 	GetPlanet(id string) (*models.Planet, error)
 	GetPlanetByName(name string) ([]models.Planet, error)
+	DeletePlanet(planetID string) error
 }
 
 type service struct {
@@ -92,4 +93,14 @@ func (s *service) GetPlanetByName(name string) ([]models.Planet, error) {
 	}
 
 	return planet, nil
+}
+
+func (s *service) DeletePlanet(planetID string) error {
+
+	err := dao.NewPlanet().DeletePlanet(planetID)
+	if err != nil {
+		return xerrors.Errorf("Deleting planet: %w", err)
+	}
+
+	return nil
 }
