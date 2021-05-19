@@ -46,6 +46,11 @@ func (s *service) Create(planet models.Planet) (*models.Planet, error) {
 
 	planet.ID = primitive.NewObjectID()
 
+	if !planet.IsValid() {
+		return nil, xerrors.Errorf("Missing required field: %v", err)
+
+	}
+
 	err = dao.NewPlanet().InsertPlanet(planet)
 	if err != nil {
 		return nil, xerrors.Errorf("Saving planet on db: %v", err)

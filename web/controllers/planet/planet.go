@@ -39,7 +39,7 @@ func (c *controller) Create(ec echo.Context) error {
 
 	newplanet, err := services.New().Create(planet.Planet)
 	if err != nil {
-		return ec.JSON(http.StatusBadRequest, errors.TypedError{Code: errors.ErrorCreatingPlanet, Message: "Error creating a new planet. Check https://swapi.dev/api/planets/ to get the list of allwed planets ", Stack: planet})
+		return ec.JSON(http.StatusBadRequest, errors.TypedError{Code: errors.ErrorCreatingPlanet, Message: "Error creating a new planet. Check https://swapi.dev/api/planets/ to get the list of allwed planets ", Stack: err.Error()})
 	}
 
 	return ec.JSON(http.StatusCreated, newplanet)
