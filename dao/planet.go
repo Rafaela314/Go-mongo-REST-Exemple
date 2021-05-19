@@ -16,7 +16,7 @@ const (
 type Planet interface {
 	InsertPlanet(planet models.Planet) error
 	GetPlanet(id string) (*models.Planet, error)
-	GetPlanetByName(name string) (*models.Planet, error)
+	GetPlanetByName(name string) ([]models.Planet, error)
 }
 
 type planet struct {
@@ -53,14 +53,19 @@ func (d *planet) GetPlanet(id string) (*models.Planet, error) {
 	return &result, err
 }
 
-func (d *planet) GetPlanetByName(name string) (*models.Planet, error) {
+func (d *planet) GetPlanetByName(name string) ([]models.Planet, error) {
 
-	var result models.Planet
+	filter, err := d.GetCollection().Find(d.ctx, bson.M{"name": name})
+	if err != nil {
+		return nil, xerrors.Errorf("Unable to filter by param on mongo: %v", err)
+	}
 
-	_ = d.GetCollection().FindOne(d.ctx, bson.M{"name": name}).Decode(&result)
-	//if err != nil {
-	//	return nil, xerrors.Errorf("Unable to use mongo: %v", err)
-	//}
+	var result []models.Planet
 
-	return &result, nil
+	err = filter.All(d.ctx, &result)
+	if err != nil {
+		return nil, xerrors.Errorf("Unable find planet by name: %v", err)
+	}
+
+	return result, nil
 }

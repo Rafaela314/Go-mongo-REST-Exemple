@@ -17,7 +17,7 @@ const PLANET string = "planets"
 type Planet interface {
 	Create(planet models.Planet) (*models.Planet, error)
 	GetPlanet(id string) (*models.Planet, error)
-	GetPlanetByName(name string) (*models.Planet, error)
+	GetPlanetByName(name string) ([]models.Planet, error)
 }
 
 type service struct {
@@ -80,13 +80,15 @@ func (s *service) GetPlanet(id string) (*models.Planet, error) {
 	return planet, nil
 }
 
-func (s *service) GetPlanetByName(name string) (*models.Planet, error) {
-
-	fmt.Printf("\n %v Name \n", name)
+func (s *service) GetPlanetByName(name string) ([]models.Planet, error) {
 
 	planet, err := dao.NewPlanet().GetPlanetByName(name)
 	if err != nil {
 		return nil, xerrors.Errorf("could not find planet by name: %w", err)
+	}
+	if len(planet) <= 0 {
+		return nil, xerrors.Errorf("could not find planet by name: %w", err)
+
 	}
 
 	return planet, nil

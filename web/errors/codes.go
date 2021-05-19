@@ -1,5 +1,11 @@
 package errors
 
+const (
+	ErrorFindingPlanetByName = 1
+	ErrorFindingPlanetById   = 2
+	ErrorCreatingPlanet      = 3
+)
+
 //AppError -
 type AppError struct { //nolint
 	HTTPCode int    `json:"-"`
@@ -9,4 +15,11 @@ type AppError struct { //nolint
 
 func (e AppError) Error() string {
 	return e.Message
+}
+
+// TypedError is used to send to interface errors with code
+type TypedError struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Stack   interface{} `json:"stack"`
 }

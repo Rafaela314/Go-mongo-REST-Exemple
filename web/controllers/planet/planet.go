@@ -6,6 +6,7 @@ import (
 	services "github.com/Rafaela314/Go-mongo-REST-Exemple/services/planet"
 	"github.com/Rafaela314/Go-mongo-REST-Exemple/settings"
 	"github.com/Rafaela314/Go-mongo-REST-Exemple/web/controllers"
+	"github.com/Rafaela314/Go-mongo-REST-Exemple/web/errors"
 
 	"github.com/labstack/echo/v4"
 	"golang.org/x/xerrors"
@@ -61,7 +62,7 @@ func (c *controller) List(ec echo.Context) error {
 
 	newplanet, err := services.New().Create(planet.Planet)
 	if err != nil {
-		return ec.JSON(http.StatusBadRequest, err)
+		return ec.JSON(http.StatusBadRequest, errors.TypedError{Code: errors.ErrorFindingPlanetById, Message: "Error creating a new planet. Check https://swapi.dev/api/planets/ to get the list of allwed planets ", Stack: err})
 	}
 
 	return ec.JSON(http.StatusCreated, newplanet)
@@ -82,7 +83,7 @@ func (c *controller) GetByName(ec echo.Context) error {
 
 	planet, err := services.New().GetPlanetByName(name)
 	if err != nil {
-		return ec.JSON(http.StatusBadRequest, err)
+		return ec.JSON(http.StatusBadRequest, errors.TypedError{Code: errors.ErrorFindingPlanetByName, Message: "No planet was found with this name, please verify planet name.", Stack: name})
 	}
 
 	return ec.JSON(http.StatusCreated, planet)
@@ -101,7 +102,7 @@ func (c *controller) Get(ec echo.Context) error {
 
 	planet, err := services.New().GetPlanet(id)
 	if err != nil {
-		return ec.JSON(http.StatusBadRequest, err)
+		return ec.JSON(http.StatusBadRequest, errors.TypedError{Code: errors.ErrorFindingPlanetById, Message: "No planet was found with this id, please verify planet id.", Stack: id})
 	}
 
 	return ec.JSON(http.StatusCreated, planet)
